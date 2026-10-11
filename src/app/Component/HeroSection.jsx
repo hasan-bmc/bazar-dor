@@ -1,27 +1,32 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-function getBangladeshDate() {
-  return new Intl.DateTimeFormat("bn-BD", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "Asia/Dhaka",
-  }).format(new Date());
-}
-
 export default function HeroSection() {
+  const [bangladeshDate, setBangladeshDate] = useState("");
+
+  useEffect(() => {
+    const formattedDate = new Intl.DateTimeFormat("bn-BD", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "Asia/Dhaka",
+    }).format(new Date());
+
+    setBangladeshDate(formattedDate);
+  }, []);
+
   return (
     <section className="overflow-hidden rounded-3xl border border-[#dce6dd] bg-[#fbfdfb] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
       <div className="grid items-center gap-8 md:grid-cols-[1.35fr_0.85fr] md:gap-6">
         {/* Left content */}
         <div className="max-w-2xl">
-          <span className="inline-flex rounded-full bg-[#e1f1e7] px-3 py-1.5 text-xs font-medium text-[#078b43] sm:text-sm">
-            {getBangladeshDate()}
+          <span className="inline-flex min-h-7 items-center rounded-full bg-[#e1f1e7] px-3 py-1.5 text-xs font-medium text-[#078b43] sm:text-sm">
+            {bangladeshDate || "বাজার দর • প্রতিদিনের আপডেট"}
           </span>
 
           <h1 className="mt-4 text-3xl font-extrabold leading-[1.25] tracking-tight text-[#111c15] sm:text-4xl lg:text-5xl">

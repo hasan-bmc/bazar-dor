@@ -155,12 +155,6 @@ export default function ProfilePage() {
                 <p className="break-all text-sm text-gray-600">
                   {user.email}
                 </p>
-
-                <p className="mt-1 text-xs text-gray-500">
-                  {user.emailVerified
-                    ? "ইমেইল ভেরিফাই করা"
-                    : "ইমেইল এখনো ভেরিফাই করা হয়নি"}
-                </p>
               </div>
             </div>
 
