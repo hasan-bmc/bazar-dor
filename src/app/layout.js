@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import Navbar from "./Component/Navber";
+import Footer from "./Component/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,9 @@ export default function RootLayout({ children }) {
         </Suspense>
 
         {children}
+
+        <Footer />
+
       </body>
     </html>
   );
