@@ -1,38 +1,61 @@
+
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
+
+function getBangladeshDate() {
+  return new Intl.DateTimeFormat("bn-BD", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Asia/Dhaka",
+  }).format(new Date());
+}
 
 export default function HeroSection() {
   return (
-    <section className="overflow-hidden rounded-2xl border border-[#dce6dd] bg-[#fbfdfb] px-5 py-7 sm:px-8 sm:py-10">
-      <div className="flex items-center justify-between gap-4">
-        <div className="max-w-lg">
-          <span className="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-[10px] font-semibold text-green-800">
-            বাজার দর • প্রতিদিনের আপডেট
+    <section className="overflow-hidden rounded-3xl border border-[#dce6dd] bg-[#fbfdfb] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+      <div className="grid items-center gap-8 md:grid-cols-[1.35fr_0.85fr] md:gap-6">
+        {/* Left content */}
+        <div className="max-w-2xl">
+          <span className="inline-flex rounded-full bg-[#e1f1e7] px-3 py-1.5 text-xs font-medium text-[#078b43] sm:text-sm">
+            {getBangladeshDate()}
           </span>
 
-          <h1 className="mt-3 text-2xl font-extrabold leading-tight text-gray-900 sm:text-4xl">
-            আজকের সব বাজারের দাম
-            <br />
-            এক নজরে
+          <h1 className="mt-4 text-3xl font-extrabold leading-[1.25] tracking-tight text-[#111c15] sm:text-4xl lg:text-5xl">
+            আজকের বাজারের দাম এক নজরে
           </h1>
 
-          <p className="mt-3 max-w-md text-xs leading-6 text-gray-600 sm:text-sm">
-            চাল, ডাল, তেল, সবজি, মাছ, মাংসসহ নিত্যপ্রয়োজনীয়
-            পণ্যের দাম জানুন সহজেই।
+          <p className="mt-4 max-w-xl text-sm leading-7 text-gray-600 sm:text-base">
+            চাল, ডাল, তেল, সবজি, মাছ, মাংস, ডিম ও মসলার দাম —
+            বাজারভিত্তিক বিস্তারিত, গড়, সর্বনিম্ন-সর্বোচ্চ
+            এবং দামের পরিবর্তন এক জায়গায়।
           </p>
 
           <Link
             href="#all-products"
-            className="mt-4 inline-flex rounded-lg bg-green-700 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-green-800"
+            className="mt-5 inline-flex items-center justify-center rounded-lg bg-[#078b43] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#066f36] focus:outline-none focus:ring-2 focus:ring-[#078b43] focus:ring-offset-2"
           >
-            সব পণ্য দেখুন →
+            সব পণ্য দেখুন
+            <span className="ml-2" aria-hidden="true">
+              →
+            </span>
           </Link>
         </div>
 
-        <div
-          className="shrink-0 text-6xl sm:text-8xl"
-          aria-hidden="true"
-        >
-          🧺
+        {/* Right image */}
+        <div className="relative mx-auto flex w-full max-w-sm items-center justify-center md:max-w-none">
+          <Image
+            src="/bazar-hero.png"
+            alt="বাজারের তাজা শাকসবজি ও পণ্য"
+            width={480}
+            height={360}
+            priority
+            className="h-auto w-full max-w-[300px] object-contain sm:max-w-[360px] lg:max-w-[400px]"
+            sizes="(max-width: 768px) 80vw, 400px"
+          />
         </div>
       </div>
     </section>
