@@ -57,7 +57,7 @@ function SignInForm() {
       if (result?.error) {
         toast.error(
           result.error.message ||
-            "সাইন ইন ব্যর্থ হয়েছে। তথ্য যাচাই করুন।"
+          "সাইন ইন ব্যর্থ হয়েছে। তথ্য যাচাই করুন।"
         );
         return;
       }
@@ -168,44 +168,54 @@ function SignInForm() {
           <div className="h-px flex-1 bg-gray-300" />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
+          {/* Google Login */}
           <button
             type="button"
             disabled={loading}
             onClick={() => handleSocialLogin("google")}
-            className="flex h-[34px] items-center justify-center gap-2 rounded-lg border border-gray-800 text-xs hover:bg-gray-100 disabled:opacity-60"
+            className="flex min-w-0 h-16 items-center justify-center gap-2 rounded-xl border border-gray-800 bg-transparent px-2 text-black transition-colors hover:bg-gray-100 disabled:opacity-60"
           >
-            <span className="text-base font-bold text-blue-600">
-              G
-            </span>
-            <span className="text-center leading-3">
+            <svg
+              viewBox="0 0 48 48"
+              className="h-5 w-5 shrink-0"
+              aria-hidden="true"
+            >
+              <path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15z" />
+              <path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44z" />
+              <path fill="#FBBC05" d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8z" />
+              <path fill="#EA4335" d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8A19.4 19.4 0 0 0 24 4 20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12z" />
+            </svg>
+
+            <span className="text-center text-sm font-semibold leading-tight sm:text-base">
               Google দিয়ে
               <br />
               চালিয়ে যান
             </span>
           </button>
 
+          {/* GitHub Login */}
           <button
             type="button"
             disabled={loading}
             onClick={() => handleSocialLogin("github")}
-            className="flex h-[34px] items-center justify-center gap-2 rounded-lg border border-gray-800 text-xs hover:bg-gray-100 disabled:opacity-60"
+            className="flex min-w-0 h-16 items-center justify-center gap-2 rounded-xl border border-gray-400 bg-[#e9ece9] px-2 text-black transition-colors hover:bg-gray-200 disabled:opacity-60"
           >
             <svg
               viewBox="0 0 24 24"
-              className="h-4 w-4 fill-current"
+              className="h-5 w-5 shrink-0 fill-[#202923]"
               aria-hidden="true"
             >
-              <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.08c-3.1.68-3.75-1.32-3.75-1.32-.5-1.29-1.24-1.63-1.24-1.63-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 .1.7 2.05 3.1 1.55.1-.73.4-1.22.72-1.5-2.48-.28-5.1-1.24-5.1-5.52 0-1.22.44-2.22 1.16-3-.12-.29-.5-1.42.11-2.96 0 0 .95-.3 3.05 1.15a10.6 10.6 0 0 1 5.56 0c2.1-1.45 3.05-1.15 3.05-1.15.61 1.54.23 2.67.11 2.96.72.78 1.16 1.78 1.16 3 0 4.29-2.62 5.23-5.11 5.51.4.35.76 1.03.76 2.08V22c0 .29.2.63.77.53A11.1 11.1 0 0 0 12 .9z" />
+              <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.08c-3.1.68-3.75-1.32-3.75-1.32-.5-1.29-1.24-1.63-1.24-1.63-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 .7 2.05 3.1 3.1 1.55.1-.73.4-1.22.72-1.5-2.48-.28-5.1-1.24-5.1-5.52 0-1.22.44-2.22 1.16-3-.12-.29-.5-1.42.11-2.96 0 0 .95-.3 3.05 1.15a10.6 10.6 0 0 1 5.56 0c2.1-1.45 3.05-1.15 3.05-1.15.61 1.54.23 2.67.11 2.96.72.78 1.16 1.78 1.16 3 0 4.29-2.62 5.23-5.11 5.51.4.35.76 1.03.76 2.08V22c0 .29.2.63.77.53A11.1 11.1 0 0 0 12 .9z" />
             </svg>
-            <span className="text-center leading-3">
+
+            <span className="text-center text-sm font-semibold leading-tight sm:text-base">
               GitHub দিয়ে
               <br />
               চালিয়ে যান
             </span>
           </button>
         </div>
-
         <p className="mt-4 text-center text-xs text-gray-600">
           অ্যাকাউন্ট নেই?{" "}
           <Link
