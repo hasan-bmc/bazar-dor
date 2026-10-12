@@ -5,7 +5,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "@/lib/auth-client";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 function SignInForm() {
   const searchParams = useSearchParams();
@@ -62,19 +62,16 @@ function SignInForm() {
         return;
       }
 
+      // Successful login toast
       toast.success("সাইন ইন সফল হয়েছে! স্বাগতম 🎉", {
+        duration: 3500,
         position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        theme: "light",
       });
 
-      // Toast দেখানোর পর redirect
+      // Keep the toast visible before redirect.
       window.setTimeout(() => {
         window.location.replace(callbackURL);
-      }, 3000);
+      }, 2800);
     } catch (error) {
       console.error("Sign-in request failed:", error);
 

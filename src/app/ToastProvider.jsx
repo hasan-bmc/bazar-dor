@@ -1,20 +1,25 @@
-
 "use client";
 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "react-hot-toast";
 
 export default function ToastProvider() {
   return (
-    <ToastContainer
+    <Toaster
       position="top-right"
-      autoClose={2500}
-      newestOnTop
-      closeOnClick
-      pauseOnHover
-      pauseOnFocusLoss={false}
-      theme="light"
-      style={{ zIndex: 999999 }}
+      reverseOrder={false}
+      toastOptions={{
+        duration: 3500,
+        style: {
+          zIndex: 99999,
+          fontFamily: "inherit",
+        },
+        success: {
+          iconTheme: {
+            primary: "#15803d",
+            secondary: "#ffffff",
+          },
+        },
+      }}
     />
   );
 }

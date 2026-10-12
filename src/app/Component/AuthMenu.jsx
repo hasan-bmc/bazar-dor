@@ -1,9 +1,11 @@
+
 "use client";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export default function AuthMenu() {
   const router = useRouter();
@@ -49,15 +51,27 @@ export default function AuthMenu() {
       const result = await authClient.signOut();
 
       if (result?.error) {
-        console.error("Sign out failed:", result.error.message);
+        console.error("Sign out failed:", result.error);
+
+        toast.error(
+          result.error.message || "লগআউট করা যায়নি। আবার চেষ্টা করুন।"
+        );
         return;
       }
 
       setOpen(false);
-      router.push("/");
+
+      // Global ToastProvider থাকলে navigation-এর পরও toast থাকবে।
+      toast.success("সফলভাবে লগআউট হয়েছে!", {
+        duration: 2500,
+      });
+
+      router.replace("/");
       router.refresh();
     } catch (error) {
       console.error("Sign out error:", error);
+
+      toast.error("লগআউট করার সময় সমস্যা হয়েছে।");
     } finally {
       setLoading(false);
     }

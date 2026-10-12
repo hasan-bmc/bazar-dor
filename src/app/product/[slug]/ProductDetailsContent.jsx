@@ -9,6 +9,7 @@ const API =
 
 const numberBn = (value) => {
   const n = Number(value);
+
   return Number.isFinite(n)
     ? n.toLocaleString("bn-BD", { maximumFractionDigits: 2 })
     : "—";
@@ -89,12 +90,25 @@ function ProductIcon({ product }) {
   );
 }
 
+function getCategoryHref(product) {
+  const categorySlug =
+    product.categorySlug ??
+    product.category?.slug ??
+    product.category?.categorySlug;
+
+  return categorySlug
+    ? `/category/${encodeURIComponent(categorySlug)}`
+    : "/category/chal";
+}
+
 export default function ProductDetailsContent({ slug }) {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (!slug) return;
+
     const controller = new AbortController();
 
     async function load() {
@@ -111,23 +125,25 @@ export default function ProductDetailsContent({ slug }) {
         });
 
         if (!response.ok) {
-          throw new Error("API থেকে তথ্য পাওয়া যায়নি।");
+          throw new Error("API থেকে তথ্য পাওয়া যায়নি।");
         }
 
         const json = await response.json();
         const found = findProduct(json, slug);
 
         if (!found) {
-          throw new Error("পণ্যটি পাওয়া যায়নি।");
+          throw new Error("পণ্যটি পাওয়া যায়নি।");
         }
 
         setProduct(found);
       } catch (err) {
         if (err.name !== "AbortError") {
-          setError(err.message);
+          setError(err.message || "একটি সমস্যা হয়েছে।");
         }
       } finally {
-        if (!controller.signal.aborted) setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     }
 
@@ -138,8 +154,9 @@ export default function ProductDetailsContent({ slug }) {
 
   if (loading) {
     return (
-      <main className="min-h-[70vh] bg-[#f0f5f1] p-6">
-        <div className="mx-auto max-w-5xl animate-pulse space-y-4">
+      <main className="min-h-[75vh] bg-[#f0f5f1] px-4 py-5 sm:px-6 lg:px-[26px]">
+        <div className="mx-auto w-full max-w-[1420px] animate-pulse space-y-4">
+          <div className="h-5 w-64 rounded bg-gray-200" />
           <div className="h-28 rounded-2xl bg-white" />
           <div className="h-96 rounded-2xl bg-white" />
         </div>
@@ -151,9 +168,12 @@ export default function ProductDetailsContent({ slug }) {
     return (
       <main className="flex min-h-[70vh] items-center justify-center bg-[#f0f5f1] p-5">
         <div className="rounded-2xl bg-white p-8 text-center">
-          <h1 className="text-xl font-bold">পণ্য পাওয়া যায়নি</h1>
+          <h1 className="text-xl font-bold">পণ্য পাওয়া যায়নি</h1>
           <p className="mt-2 text-sm text-gray-500">{error}</p>
-          <Link href="/" className="mt-4 inline-block text-green-700">
+          <Link
+            href="/"
+            className="mt-4 inline-block font-semibold text-green-700 hover:underline"
+          >
             হোমে ফিরে যান
           </Link>
         </div>
@@ -163,6 +183,7 @@ export default function ProductDetailsContent({ slug }) {
 
   const name = product.nameBn || product.name || "পণ্যের নাম";
   const unit = product.unit || "কেজি";
+
   const category =
     product.categoryNameBn ||
     product.categoryBn ||
@@ -170,6 +191,8 @@ export default function ProductDetailsContent({ slug }) {
       ? product.category
       : product.category?.nameBn) ||
     "পণ্য";
+
+  const categoryHref = getCategoryHref(product);
 
   const rawToday = product.today ?? product.price ?? 0;
   const today =
@@ -190,10 +213,10 @@ export default function ProductDetailsContent({ slug }) {
 
     const avg = Number(
       market.avgPrice ??
-      market.averagePrice ??
-      market.avg ??
-      market.price ??
-      (min + max) / 2
+        market.averagePrice ??
+        market.avg ??
+        market.price ??
+        (min + max) / 2
     );
 
     return {
@@ -232,20 +255,51 @@ export default function ProductDetailsContent({ slug }) {
     : Number(product.maxPrice ?? today);
 
   const avgPrice = validRows.length
-    ? validRows.reduce((sum, row) => sum + row.avg, 0) /
-      validRows.length
+    ? validRows.reduce((sum, row) => sum + row.avg, 0) / validRows.length
     : Number(product.avgPrice ?? today);
 
   return (
-    <main className="min-h-[75vh] bg-[#f0f5f1] px-4 py-5 sm:px-6">
-      <div className="mx-auto max-w-5xl space-y-4">
+    <main className="min-h-[75vh] bg-[#f0f5f1] px-4 py-5 sm:px-6 lg:px-[26px]">
+      <div className="mx-auto w-full max-w-[1420px] space-y-4">
+        {/* Breadcrumb */}
+        <nav
+          aria-label="Breadcrumb"
+          className="mb-5 flex flex-wrap items-center gap-2 text-sm text-gray-600"
+        >
+          <Link href="/" className="transition-colors hover:text-green-700">
+            হোম
+          </Link>
+
+          <span className="text-gray-400" aria-hidden="true">
+            ›
+          </span>
+
+          <Link
+            href={categoryHref}
+            className="transition-colors hover:text-green-700"
+          >
+            {category}
+          </Link>
+
+          <span className="text-gray-400" aria-hidden="true">
+            ›
+          </span>
+
+          <span
+            className="font-medium text-gray-900"
+            aria-current="page"
+          >
+            {name}
+          </span>
+        </nav>
+
         {/* Product header */}
         <section className="flex flex-col justify-between gap-5 rounded-2xl border border-[#dce6dd] bg-[#fbfdfb] p-4 sm:flex-row sm:items-center sm:p-5">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <ProductIcon product={product} />
 
-            <div>
-              <h1 className="text-2xl font-extrabold text-gray-950">
+            <div className="min-w-0">
+              <h1 className="text-2xl font-extrabold text-gray-950 sm:text-3xl">
                 {name}
               </h1>
 
@@ -254,15 +308,13 @@ export default function ProductDetailsContent({ slug }) {
               </p>
 
               <p className="mt-1 text-xs text-gray-500">
-                গতকালের তুলনায় আজকের দাম{" "}
+                গতকালের তুলনায় আজকের দাম{" "}
                 {change.dir === "up"
-                  ? "বেড়েছে"
+                  ? "বেড়েছে"
                   : change.dir === "down"
                     ? "কমেছে"
                     : "অপরিবর্তিত"}
-                {change.pct != null
-                  ? ` ${numberBn(change.pct)}%`
-                  : ""}
+                {change.pct != null ? ` ${numberBn(change.pct)}%` : ""}
               </p>
             </div>
           </div>
@@ -287,7 +339,7 @@ export default function ProductDetailsContent({ slug }) {
                 ? "▲"
                 : change.dir === "down"
                   ? "▼"
-                  : "●"}{" "}
+                  : "—"}{" "}
               {change.pct != null
                 ? `${numberBn(change.pct)}%`
                 : "অপরিবর্তিত"}
@@ -295,7 +347,7 @@ export default function ProductDetailsContent({ slug }) {
           </div>
         </section>
 
-        {/* Details */}
+        {/* Price summary and market table */}
         <section className="rounded-2xl border border-[#dce6dd] bg-[#fbfdfb] p-4 sm:p-5">
           <h2 className="mb-3 text-base font-bold">
             দামের সারসংক্ষেপ
@@ -307,16 +359,16 @@ export default function ProductDetailsContent({ slug }) {
                 label: "সর্বনিম্ন দাম",
                 price: minPrice,
                 color: "text-green-700",
-                note: "সবচেয়ে কম দামের বাজার",
+                note: "সবচেয়ে কম দামের বাজার",
               },
               {
                 label: "সর্বোচ্চ দাম",
                 price: maxPrice,
                 color: "text-red-600",
-                note: "সবচেয়ে বেশি দামের বাজার",
+                note: "সবচেয়ে বেশি দামের বাজার",
               },
               {
-                label: "গড় দাম",
+                label: "গড় দাম",
                 price: avgPrice,
                 color: "text-green-700",
                 note: "প্রতি কেজি/ইউনিট হিসাবে",
@@ -346,15 +398,21 @@ export default function ProductDetailsContent({ slug }) {
               <table className="w-full min-w-[620px] text-sm">
                 <thead className="bg-[#f8faf8] text-gray-500">
                   <tr>
-                    <th className="px-3 py-3 text-left font-medium">বাজার</th>
-                    <th className="px-3 py-3 text-left font-medium">বিভাগ</th>
+                    <th className="px-3 py-3 text-left font-medium">
+                      বাজার
+                    </th>
+                    <th className="px-3 py-3 text-left font-medium">
+                      বিভাগ
+                    </th>
                     <th className="px-3 py-3 text-right font-medium">
                       সর্বনিম্ন
                     </th>
                     <th className="px-3 py-3 text-right font-medium">
-                      সর্বোচ্চ
+                      সর্বাধিক
                     </th>
-                    <th className="px-3 py-3 text-right font-medium">গড়</th>
+                    <th className="px-3 py-3 text-right font-medium">
+                      গড়
+                    </th>
                   </tr>
                 </thead>
 
@@ -363,9 +421,7 @@ export default function ProductDetailsContent({ slug }) {
                     <tr
                       key={row.id}
                       className={
-                        index % 2 === 0
-                          ? "bg-white"
-                          : "bg-[#f0f5f1]"
+                        index % 2 === 0 ? "bg-white" : "bg-[#f0f5f1]"
                       }
                     >
                       <td className="px-3 py-3">{row.name}</td>
@@ -388,7 +444,7 @@ export default function ProductDetailsContent({ slug }) {
             </div>
           ) : (
             <p className="rounded-xl bg-gray-50 p-4 text-sm text-gray-500">
-              API response-এ বাজারভিত্তিক দামের তথ্য পাওয়া যায়নি।
+              API response-এ বাজারভিত্তিক দামের তথ্য পাওয়া যায়নি।
             </p>
           )}
         </section>
