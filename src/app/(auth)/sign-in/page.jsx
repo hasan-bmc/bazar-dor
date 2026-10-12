@@ -1,13 +1,11 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Suspense } from "react";
 import { signIn } from "@/lib/auth-client";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 function SignInForm() {
   const searchParams = useSearchParams();
@@ -16,7 +14,6 @@ function SignInForm() {
   const getCallbackURL = () => {
     const requestedURL = searchParams.get("callbackURL");
 
-    // Prevent external redirects
     if (
       requestedURL &&
       requestedURL.startsWith("/") &&
@@ -55,6 +52,8 @@ function SignInForm() {
         callbackURL,
       });
 
+      console.log("LOGIN RESULT:", result);
+
       if (result?.error) {
         toast.error(
           result.error.message ||
@@ -63,27 +62,19 @@ function SignInForm() {
         return;
       }
 
-      if (!result?.data) {
-        toast.error(
-          "সার্ভার থেকে সঠিক response পাওয়া যায়নি।"
-        );
-        return;
-      }
-
-      // Updated success toast only
       toast.success("সাইন ইন সফল হয়েছে! স্বাগতম 🎉", {
         position: "top-right",
-        autoClose: 1500,
+        autoClose: 2500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         theme: "light",
       });
 
-      // Keep existing redirect logic unchanged
+      // Toast দেখানোর পর redirect
       window.setTimeout(() => {
         window.location.replace(callbackURL);
-      }, 700);
+      }, 3000);
     } catch (error) {
       console.error("Sign-in request failed:", error);
 
@@ -243,28 +234,16 @@ function SignInForm() {
 
 export default function SignIn() {
   return (
-    <>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        theme="light"
-        newestOnTop
-        closeOnClick
-        pauseOnHover
-        progressClassName="!bg-green-600"
-      />
-
-      <Suspense
-        fallback={
-          <main className="flex min-h-screen items-center justify-center bg-[#f1f6f1]">
-            <p className="text-sm text-gray-500">
-              সাইন ইন পেজ লোড হচ্ছে...
-            </p>
-          </main>
-        }
-      >
-        <SignInForm />
-      </Suspense>
-    </>
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-[#f1f6f1]">
+          <p className="text-sm text-gray-500">
+            সাইন ইন পেজ লোড হচ্ছে...
+          </p>
+        </main>
+      }
+    >
+      <SignInForm />
+    </Suspense>
   );
 }

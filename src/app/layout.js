@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import Navbar from "./Component/Navber";
 import Footer from "./Component/Footer";
+import ToastProvider from "./ToastProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +42,7 @@ export default function RootLayout({ children }) {
         >
           <Navbar />
         </Suspense>
-
+        <ToastProvider />
         {children}
 
         <Footer />
