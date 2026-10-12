@@ -1,9 +1,12 @@
-
 "use client";
 
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import {
+  handleGoogleSignIn,
+  handleGitHubSignIn,
+} from "@/lib/social-auth";
 import { signIn } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
@@ -52,26 +55,22 @@ function SignInForm() {
         callbackURL,
       });
 
-      console.log("LOGIN RESULT:", result);
-
       if (result?.error) {
         toast.error(
-          result.error.message ||
-          "সাইন ইন ব্যর্থ হয়েছে। তথ্য যাচাই করুন।"
+          result.error.message || "সাইন ইন ব্যর্থ হয়েছে। তথ্য যাচাই করুন।"
         );
+        setLoading(false);
         return;
       }
 
-      // Successful login toast
       toast.success("সাইন ইন সফল হয়েছে! স্বাগতম 🎉", {
-        duration: 3500,
+        duration: 2500,
         position: "top-right",
       });
 
-      // Keep the toast visible before redirect.
       window.setTimeout(() => {
         window.location.replace(callbackURL);
-      }, 2800);
+      }, 2200);
     } catch (error) {
       console.error("Sign-in request failed:", error);
 
@@ -80,24 +79,35 @@ function SignInForm() {
           ? `সাইন ইন সমস্যা: ${error.message}`
           : "সার্ভারের সঙ্গে সংযোগ করা যায়নি।"
       );
-    } finally {
+
       setLoading(false);
     }
   };
 
-  const handleSocialLogin = async (provider) => {
+  const onGoogleClick = async () => {
     if (loading) return;
 
     setLoading(true);
 
     try {
-      await signIn.social({
-        provider,
-        callbackURL: getCallbackURL(),
-      });
+      await handleGoogleSignIn(getCallbackURL());
     } catch (error) {
-      console.error("Social sign-in error:", error);
-      toast.error("সোশ্যাল লগইনে সমস্যা হয়েছে।");
+      console.error("Google Sign In Error:", error);
+      toast.error("Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।");
+      setLoading(false);
+    }
+  };
+
+  const onGitHubClick = async () => {
+    if (loading) return;
+
+    setLoading(true);
+
+    try {
+      await handleGitHubSignIn(getCallbackURL());
+    } catch (error) {
+      console.error("GitHub Sign In Error:", error);
+      toast.error("GitHub দিয়ে সাইন ইন করতে সমস্যা হয়েছে।");
       setLoading(false);
     }
   };
@@ -108,6 +118,7 @@ function SignInForm() {
         <h1 className="text-[25px] font-bold text-gray-950">
           সাইন ইন
         </h1>
+
         <p className="mt-1 text-sm text-gray-500">
           বিস্তারিত তথ্য দেখতে অ্যাকাউন্টে ঢুকুন।
         </p>
@@ -122,6 +133,7 @@ function SignInForm() {
             >
               ইমেইল
             </label>
+
             <input
               id="email"
               name="email"
@@ -141,6 +153,7 @@ function SignInForm() {
             >
               পাসওয়ার্ড
             </label>
+
             <input
               id="password"
               name="password"
@@ -168,24 +181,36 @@ function SignInForm() {
           <div className="h-px flex-1 bg-gray-300" />
         </div>
 
-
+        {/* Social Login */}
         <div className="grid grid-cols-2 gap-3">
-          {/* Google Login */}
+          {/* Google */}
           <button
             type="button"
             disabled={loading}
-            onClick={() => handleSocialLogin("google")}
-            className="flex min-w-0 h-16 items-center justify-center gap-2 rounded-xl border border-gray-800 bg-transparent px-2 text-black transition-colors hover:bg-gray-100 disabled:opacity-60"
+            onClick={onGoogleClick}
+            className="flex h-16 min-w-0 items-center justify-center gap-2 rounded-xl border border-gray-800 bg-transparent px-2 text-black transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <svg
               viewBox="0 0 48 48"
               className="h-5 w-5 shrink-0"
               aria-hidden="true"
             >
-              <path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15z" />
-              <path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44z" />
-              <path fill="#FBBC05" d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8z" />
-              <path fill="#EA4335" d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8A19.4 19.4 0 0 0 24 4 20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12z" />
+              <path
+                fill="#4285F4"
+                d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15z"
+              />
+              <path
+                fill="#34A853"
+                d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8z"
+              />
+              <path
+                fill="#EA4335"
+                d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8A19.4 19.4 0 0 0 24 4 20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12z"
+              />
             </svg>
 
             <span className="text-center text-sm font-semibold leading-tight sm:text-base">
@@ -195,12 +220,12 @@ function SignInForm() {
             </span>
           </button>
 
-          {/* GitHub Login */}
+          {/* GitHub */}
           <button
             type="button"
             disabled={loading}
-            onClick={() => handelgithubSignIn()}
-            className="flex min-w-0 h-16 items-center justify-center gap-2 rounded-xl border border-gray-400 bg-[#e9ece9] px-2 text-black transition-colors hover:bg-gray-200 disabled:opacity-60"
+            onClick={onGitHubClick}
+            className="flex h-16 min-w-0 items-center justify-center gap-2 rounded-xl border border-gray-400 bg-[#e9ece9] px-2 text-black transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <svg
               viewBox="0 0 24 24"
@@ -217,7 +242,6 @@ function SignInForm() {
             </span>
           </button>
         </div>
-
 
         <p className="mt-4 text-center text-xs text-gray-600">
           অ্যাকাউন্ট নেই?{" "}
