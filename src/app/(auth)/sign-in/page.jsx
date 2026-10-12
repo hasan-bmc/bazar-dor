@@ -168,6 +168,7 @@ function SignInForm() {
           <div className="h-px flex-1 bg-gray-300" />
         </div>
 
+
         <div className="grid grid-cols-2 gap-3">
           {/* Google Login */}
           <button
@@ -198,7 +199,7 @@ function SignInForm() {
           <button
             type="button"
             disabled={loading}
-            onClick={() => handleSocialLogin("github")}
+            onClick={() => handelgithubSignIn()}
             className="flex min-w-0 h-16 items-center justify-center gap-2 rounded-xl border border-gray-400 bg-[#e9ece9] px-2 text-black transition-colors hover:bg-gray-200 disabled:opacity-60"
           >
             <svg
@@ -216,6 +217,8 @@ function SignInForm() {
             </span>
           </button>
         </div>
+
+
         <p className="mt-4 text-center text-xs text-gray-600">
           অ্যাকাউন্ট নেই?{" "}
           <Link

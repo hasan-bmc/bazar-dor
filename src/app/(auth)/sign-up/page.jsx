@@ -249,7 +249,7 @@ export default function SignUp() {
                         <button
                             type="button"
                             disabled={loading}
-                            onClick={() => handleSocialLogin("github")}
+                            onClick={() => handelgithubSignIn()}
                             className="flex min-w-0 h-16 items-center justify-center gap-2 rounded-xl border border-gray-400 bg-[#e9ece9] px-2 text-black transition-colors hover:bg-gray-200 disabled:opacity-60"
                         >
                             <svg
