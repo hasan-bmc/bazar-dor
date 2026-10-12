@@ -1,7 +1,3 @@
-তোমার BazarDor প্রজেক্টের জন্য একটি professional `README.md` তৈরি করে দিলাম। এতে প্রজেক্টের পরিচিতি, ব্যবহৃত technologies, features, API, authentication, installation, environment variables এবং deployment নির্দেশনা থাকবে।
-
-এটি GitHub repository-তে সরাসরি ব্যবহার করতে পারবে।
-
 # 🛒 BazarDor — বাংলাদেশের নিত্যপ্রয়োজনীয় পণ্যের বাজারদর
 
 BazarDor is a modern, responsive web application designed to help users explore grocery products, compare market prices, and access product information conveniently. The project provides a user-friendly interface with authentication, product details, and market price information.
